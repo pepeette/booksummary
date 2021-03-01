@@ -1,2 +1,5 @@
-  
+# libraries required  
+
 streamlit==0.71.0
+EbookLib #to read epub books
+bs4 #beautifulSoup
