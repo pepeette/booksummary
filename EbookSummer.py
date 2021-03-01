@@ -1,13 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
 #pip install EbookLib
-
-
-# In[1]:
 
 
 import ebooklib
@@ -19,16 +13,11 @@ import os
 
 # ## coding the app
 
-# In[ ]:
-
 
 # Add a title
 st.title('Ebook summary')
 # Add some text
 st.text('upload your book in .epub format')
-
-
-# In[1]:
 
 
 # allow user input
@@ -43,10 +32,6 @@ if uploaded_file is not None:
 # ## 1- TRansforming the epub into text
 
 
-
-# In[ ]:
-
-
 # Seeing the chapters
 # agenda = []
 # livre = epub.read_epub(uploaded_file)
@@ -57,8 +42,6 @@ if uploaded_file is not None:
 #             #print('==================================')
         
 
-
-# In[249]:
 
 livre = epub.read_epub(uploaded_file)
 def epub2thtml(epub_path):
@@ -78,8 +61,6 @@ def epub2thtml(epub_path):
 #maybe with beautifulsoup
 
 
-# In[250]:
-
 
 from bs4 import BeautifulSoup as soup
 blacklist = ['[document]','noscript','header','html','meta','head', 'input','script',
@@ -96,8 +77,6 @@ def chap2text(chap):
     return output
 
 
-# In[251]:
-
 
 def thtml2ttext(thtml):
     Output = []
@@ -107,22 +86,16 @@ def thtml2ttext(thtml):
     return Output
 
 
-# In[252]:
-
-
 def epub2text(epub_path):
     chapters = epub2thtml(epub_path)
     ttext = thtml2ttext(chapters)
     return ttext
 
 
-# In[253]:
+
 
 
 text = epub2text(livre)
-
-
-# In[255]:
 
 
 print(type(text))
@@ -130,7 +103,6 @@ print(type(text))
 
 # ## Now, we can apply the text PREPROCESSING
 
-# In[256]:
 
 import re
 
@@ -139,15 +111,9 @@ t = [re.sub(r'\[[0-9]*\]', ' ', i) for i in text]
 t = [re.sub(r'\s+', ' ', i) for i in t]
 
 
-# In[257]:
-
-
 # Removing special characters and digits
 t1 = [re.sub(r'[^a-zA-Z]', ' ', i) for i in t]
 t1 = [re.sub(r'\s+', ' ', i) for i in t1]
-
-
-# In[258]:
 
 
 import nltk
@@ -155,15 +121,10 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 
 
-# In[259]:
-
 
 # tokenizing 
 sentence_list = [sent_tokenize(i) for i in t]
 sentence_list[3]
-
-
-# In[260]:
 
 
 # find frequecy of occurrence
@@ -180,9 +141,6 @@ for chapter in t1:
                 word_frequencies[word] += 1
 
 
-# In[261]:
-
-
 # second we calculate the weighted frequency
 
 maximum_frequency = max(word_frequencies.values())
@@ -190,8 +148,6 @@ maximum_frequency = max(word_frequencies.values())
 for word in word_frequencies.keys():
     word_frequencies[word] = (word_frequencies[word]/maximum_frequency)
 
-
-# In[262]:
 
 
 # third we expand this weighted F to the sentences to score them
@@ -210,18 +166,14 @@ for chapter in sentence_list[1:]:
 
 # ## HERE IS THE SUMMARY
 
-# In[ ]:
-
 
 # # first choose the length of your summary for the app (streamlit)
 # x = st.slider('Select a length')
 # st.write(x, 'squared is', x * x)
 
 
-# In[263]:
 
-
-# retrieving the TOP 200 sentences 
+# retrieving the TOP 5 sentences 
 
 import heapq
 summary_sentences = heapq.nlargest(5, sentence_scores, key=sentence_scores.get)
