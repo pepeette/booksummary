@@ -80,6 +80,7 @@ t1 = [re.sub(r'[^a-zA-Z]', ' ', i) for i in t]
 t1 = [re.sub(r'\s+', ' ', i) for i in t1]
 
 import nltk
+nltk.download('punkt')
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize, sent_tokenize
 
